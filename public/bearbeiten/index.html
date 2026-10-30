@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bearbeiten – CW Athletic Training</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+  :root{
+    --bg:#f4f5f2; --surface:#ffffff; --surface-2:#eef0ea; --text:#1d211c; --muted:#646b62;
+    --line:#d9ddd4; --accent-2:#e2552b; --accent:#2f6f4f; --accent-ink:#ffffff; --danger:#b3392f; --shadow:0 1px 2px rgba(0,0,0,.06),0 6px 20px rgba(0,0,0,.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#141713; --surface:#1d211c; --surface-2:#262b25; --text:#e9ece6; --muted:#9aa396;
+      --line:#343a32; --accent-2:#ff7a4d; --accent:#5fb487; --accent-ink:#0f1a13; --danger:#e0695e; --shadow:none;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#141713; --surface:#1d211c; --surface-2:#262b25; --text:#e9ece6; --muted:#9aa396;
+    --line:#343a32; --accent-2:#ff7a4d; --accent:#5fb487; --accent-ink:#0f1a13; --danger:#e0695e; --shadow:none;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 16px 80px}
+  header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .brand{display:flex;align-items:center;gap:12px}
+  .logo{width:52px;height:58px;flex:none;filter:drop-shadow(0 4px 10px rgba(0,0,0,.18))}
+  .brand-text{display:flex;flex-direction:column;line-height:1}
+  .brand-name{font-family:Impact,"Arial Black",sans-serif;font-style:italic;font-size:1.75rem;letter-spacing:.02em}
+  .brand-sub{font-size:.72rem;font-weight:700;letter-spacing:.32em;color:var(--accent);margin-top:5px}
+  .tab{font-size:1rem}
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px}
+  button,.btn{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--text);padding:7px 12px;border-radius:8px}
+  button:hover,.btn:hover{border-color:var(--accent)}
+  .primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+  .icon{padding:6px 9px;line-height:1}
+  .danger:hover{border-color:var(--danger);color:var(--danger)}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:18px}
+  .tab{border:none;border-bottom:3px solid transparent;border-radius:0;background:none;padding:8px 12px;color:var(--muted)}
+  .tab.active{color:var(--text);border-bottom-color:var(--accent);font-weight:600}
+  .day-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+  .day-head input{flex:1 1 220px}
+  input,textarea,select{font:inherit;color:var(--text);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%}
+  input:focus,textarea:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  textarea{resize:vertical;min-height:84px}
+  label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:4px;font-weight:500}
+  .list{display:grid;gap:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+  @media (max-width:760px){.card{grid-template-columns:1fr}}
+  .video{background:#000;position:relative;aspect-ratio:16/9;align-self:start}
+  .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .video .empty{position:absolute;inset:0;display:grid;place-items:center;color:#9aa396;text-align:center;padding:16px;font-size:.9rem;background:var(--surface-2)}
+  .body{padding:16px;display:grid;gap:12px;align-content:start}
+  .row{display:flex;gap:8px;align-items:center}
+  .num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.85rem;flex:none}
+  .name{font-weight:600;font-size:1.05rem}
+  .grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+  @media (max-width:480px){.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .stepper{display:flex}
+  .stepper button{padding:6px 9px;border-radius:0}
+  .stepper button:first-child{border-radius:8px 0 0 8px}
+  .stepper button:last-child{border-radius:0 8px 8px 0}
+  .stepper input{border-radius:0;text-align:center;border-left:none;border-right:none;padding:8px 2px}
+  .actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;border-top:1px solid var(--line);padding-top:10px}
+  .sets{display:flex;gap:6px;flex-wrap:wrap}
+  .set{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);display:grid;place-items:center;font-size:.8rem;cursor:pointer;user-select:none}
+  .set.done{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .summary{color:var(--muted);font-size:.9rem;margin:6px 0 16px}
+  .emptyday{border:2px dashed var(--line);border-radius:14px;padding:40px 16px;text-align:center;color:var(--muted)}
+  .add-row{margin-top:16px;display:flex;justify-content:center}
+  .hint{font-size:.78rem;color:var(--muted)}
+  dialog{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--text);max-width:520px;width:calc(100% - 32px);padding:20px}
+  dialog::backdrop{background:rgba(0,0,0,.45)}
+  .lib-item{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:8px 14px;border-radius:8px;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.show{opacity:1}
+  .readonly .edit-only,.readonly .toolbar{display:none!important}
+  .plan-title{margin:0;font-size:1.3rem;flex:1 1 220px}
+  .stats{display:flex;flex-wrap:wrap;gap:8px}
+  .stat{background:var(--surface-2);border-radius:10px;padding:6px 12px;display:flex;flex-direction:column;line-height:1.25;min-width:84px}
+  .stat span{font-size:.72rem;color:var(--muted)}
+  .stat strong{font-size:1.15rem}
+  .desc{margin:0;white-space:pre-wrap}
+  .yt-link{font-size:.82rem;color:var(--accent)}
+  .sync{font-size:.85rem;color:var(--muted);align-self:center;white-space:nowrap}
+  .sync:empty{display:none}
+  .sync[data-state="ok"]{color:var(--accent)}
+  .sync[data-state="err"]{color:var(--danger);font-weight:600}
+  #loginForm{display:grid;gap:10px}
+  a.btn{text-decoration:none;display:inline-flex;align-items:center}
+  #intro{margin-bottom:18px}
+  #intro textarea{min-height:90px}
+  .intro-box{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:14px 18px;white-space:pre-wrap;line-height:1.6;box-shadow:var(--shadow)}
+  .yt-thumb{position:absolute;inset:0;display:block;color:#fff;text-decoration:none}
+  .yt-thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.7)}
+  .yt-thumb .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:68px;height:48px;border-radius:14px;background:#e2552b;display:grid;place-items:center;font-size:1.4rem;box-shadow:0 6px 20px rgba(0,0,0,.4)}
+  .yt-thumb .cap{position:absolute;left:12px;bottom:10px;font-size:.85rem;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+  .yt-thumb:hover .play{transform:translate(-50%,-50%) scale(1.08)}
+  @media print{
+    .toolbar,.actions,.tabs,.add-row,.stepper button,.day-head button,.video{display:none!important}
+    body{background:#fff;color:#000}
+    .card{grid-template-columns:1fr;break-inside:avoid;box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand" aria-label="Cyril Wyss Athletic Training">
+      <svg class="logo" viewBox="0 0 64 72" aria-hidden="true">
+        <defs>
+          <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="var(--accent)"/>
+            <stop offset="1" stop-color="var(--accent-2)"/>
+          </linearGradient>
+        </defs>
+        <path d="M32 2 L60 16 V44 C60 58 47 66 32 70 C17 66 4 58 4 44 V16 Z" fill="url(#lg)"/>
+        <path d="M32 7 L55 19 V44 C55 55 45 61 32 65 C19 61 9 55 9 44 V19 Z" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
+        <text x="32" y="45" text-anchor="middle" font-family="Impact, 'Arial Black', sans-serif" font-size="25" font-style="italic" fill="#fff" letter-spacing="-1">CW</text>
+        <path d="M14 52 L44 52 L40 56 L10 56 Z" fill="#fff" opacity=".9"/>
+        <path d="M18 58 L38 58 L35 61 L15 61 Z" fill="#fff" opacity=".55"/>
+      </svg>
+      <div class="brand-text">
+        <span class="brand-name">CYRIL WYSS</span>
+        <span class="brand-sub">ATHLETIC TRAINING</span>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button id="shareBtn" class="primary edit-only" title="Schreibgeschützte HTML-Datei für die Weitergabe erstellen">📤 Weitergeben</button>
+      <button id="libBtn" class="edit-only" title="Gespeicherte Übungen">📚 Bibliothek</button>
+      <button onclick="window.print()">🖨 Drucken</button>
+      <span id="syncStatus" class="sync"></span>
+      <a id="viewLink" class="btn" href="/" target="_blank" rel="noopener" hidden>👁 Ansicht öffnen</a>
+      <button id="themeBtn" class="icon" title="Hell/Dunkel">◐</button>
+    </div>
+  </header>
+
+  <section id="intro"></section>
+  <nav class="tabs" id="tabs"></nav>
+  <section id="day"></section>
+</div>
+
+<dialog id="libDialog">
+  <div class="row" style="justify-content:space-between;margin-bottom:8px">
+    <strong>Übungsbibliothek</strong>
+    <button class="icon" onclick="libDialog.close()">✕</button>
+  </div>
+  <p class="hint" style="margin-top:0">Übungen speicherst du mit «In Bibliothek» auf einer Karte. Über das Feld «Übung wechseln» kannst du sie dann überall einsetzen.</p>
+  <div id="libList"></div>
+</dialog>
+
+<dialog id="loginDialog">
+  <form id="loginForm">
+    <strong>Bearbeiten – Anmeldung</strong>
+    <p class="hint">Gib dein Bearbeitungs-Passwort ein. Es wird auf diesem Gerät gemerkt.</p>
+    <input id="pwInput" type="password" autocomplete="current-password" placeholder="Passwort">
+    <p id="loginMsg" class="hint" style="color:var(--danger);min-height:1em"></p>
+    <button class="primary" type="submit">Anmelden</button>
+  </form>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* Bei der Weitergabe wird hier der fertige Plan eingesetzt → schreibgeschützte Ansicht */
+const EMBED = /*CW-EMBED*/{"active":0,"days":[{"id":"a4msnl8f","name":"Trainingsplan 1","exercises":[{"id":"cradb2n2","name":"Lunges mit Kurzhanteln","url":"https://www.youtube.com/watch?v=3vCdkrMSe4s&t=9s","sets":4,"reps":10,"weight":"","rest":"60 s","desc":"2 Serien pro Bein. Kontrolliert abbremsen und wieder hochgehen","done":[]},{"id":"fn3bhbwx","name":"Goblet Squat mit Kettlebell","url":"https://vimeo.com/1087109474","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"3 Sekunden runter und 1 Sekunde hoch","done":[]},{"id":"y9m6yo9o","name":"KB Swing alternierend","url":"https://www.youtube.com/watch?v=Rrp_dYbTi5E","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"Rücken immer gerade halten","done":[]},{"id":"v0nhpfh0","name":"Good Morning","url":"https://vimeo.com/1087109525","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"Rücken immer gerade halten","done":[]},{"id":"5lmgthky","name":"Jefferson Curl mit Langhantel","url":"https://www.youtube.com/watch?v=BWU9g05FKfo","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"langsame ausführung mit der Kettlebell","done":[]},{"id":"q49fkakt","name":"Bent Over Row einarmig mit Kurzhantel","url":"https://www.youtube.com/watch?v=djKEHg_NkJg","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"kannst du mit Kettlebell oder Kurzhantel machen. Rücken bleibt gerade","done":[]},{"id":"2jls3zl8","name":"Unilateral Chest Press liegend mit Kettlebell","url":"https://www.youtube.com/watch?v=t5mcWYtE7eU&t=10s","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"Bankdrücken, kannst du auch mit beiden Armen gleichzeitig machen","done":[]}]},{"id":"orz78uwo","name":"Trainingsplan 2","exercises":[]}],"library":[],"stamp":1793359766223}/*CW-EMBED-END*/;
+/* Auf Netlify: 'view' (Ansicht für die Person) oder 'edit' (Bearbeiten mit Passwort, speichert live) */
+const SITE_MODE = /*CW-SITE*/'edit'/*CW-SITE-END*/;
+const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
+const READONLY = SITE_MODE ? SITE_MODE === 'view' : !!EMBED;
+if (READONLY) document.documentElement.classList.add('readonly');
+const STORE_KEY = READONLY ? 'cw-athlet-ansicht-v1' : 'cw-trainingsplaene-v2';
+
+const uid = () => Math.random().toString(36).slice(2, 10);
+const newExercise = (o = {}) => ({ id: uid(), name: '', url: '', sets: 3, reps: 10, weight: '', rest: '60 s', desc: '', done: [], ...o });
+
+function defaultState(){
+  return {
+    active: 0,
+    days: [
+      { id: uid(), name: 'Trainingsplan 1', exercises: [
+        newExercise({ name: 'Goblet Squat mit Kettlebell', url: 'https://vimeo.com/1087109474' }),
+        newExercise({ name: 'Lunges mit Kurzhanteln', url: 'https://www.youtube.com/watch?v=3vCdkrMSe4s&t=9s' }),
+        newExercise({ name: 'KB Swing alternierend', url: 'https://www.youtube.com/watch?v=Rrp_dYbTi5E' }),
+        newExercise({ name: 'Good Morning', url: 'https://vimeo.com/1087109525' }),
+        newExercise({ name: 'Jefferson Curl mit Langhantel', url: 'https://www.youtube.com/watch?v=BWU9g05FKfo' }),
+        newExercise({ name: 'Bent Over Row einarmig mit Kurzhantel', url: 'https://www.youtube.com/watch?v=djKEHg_NkJg' }),
+        newExercise({ name: 'Übung 7', url: 'https://www.youtube.com/watch?v=t5mcWYtE7eU&t=10s' }),
+      ] },
+      { id: uid(), name: 'Trainingsplan 2', exercises: [] },
+    ],
+    library: []
+  };
+}
+
+/* Immer genau zwei Pläne */
+function normalize(s){
+  s.days = Array.isArray(s.days) ? s.days.slice(0, 2) : [];
+  while (s.days.length < 2) s.days.push({ id: uid(), name: 'Trainingsplan ' + (s.days.length + 1), exercises: [] });
+  s.library = s.library || [];
+  s.intro = typeof s.intro === 'string' ? s.intro : '';
+  s.active = s.active === 1 ? 1 : 0;
+  return s;
+}
+
+let state;
+if (SITE_MODE) {
+  /* Startwert bis die Live-Daten geladen sind */
+  state = EMBED ? JSON.parse(JSON.stringify(EMBED)) : defaultState();
+} else if (READONLY) {
+  state = EMBED;
+  /* abgehakte Sätze der Person wiederherstellen, solange es derselbe Plan ist */
+  try { const s = JSON.parse(localStorage.getItem(STORE_KEY)); if (s && s.stamp === EMBED.stamp) state = s; } catch {}
+} else {
+  try { state = JSON.parse(localStorage.getItem(STORE_KEY)) || defaultState(); }
+  catch { state = defaultState(); }
+}
+normalize(state);
+
+function save(){
+  if (SITE_MODE === 'edit') { queueRemoteSave(); return; }
+  if (SITE_MODE) return;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {}
+}
+
+/* ---------- Live-Speicherung (nur auf Netlify) ---------- */
+const API = '/api/plan';
+let editPw = '';
+try { editPw = localStorage.getItem('cw-edit-pw') || ''; } catch {}
+let saveTimer = null, saving = false, savePending = false;
+
+function setStatus(txt, st){
+  const el = document.getElementById('syncStatus');
+  if (el) { el.textContent = txt; el.dataset.state = st || ''; }
+}
+function queueRemoteSave(){
+  setStatus('Speichert …', 'busy');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(remoteSave, 700);
+}
+async function remoteSave(){
+  if (saving) { savePending = true; return; }
+  saving = true;
+  try {
+    const r = await fetch(API, { method: 'PUT', headers: { 'content-type': 'application/json', 'x-edit-password': editPw }, body: JSON.stringify(state) });
+    if (r.status === 401) { setStatus('Nicht gespeichert', 'err'); showLogin('Passwort falsch – bitte nochmals eingeben.'); }
+    else if (r.status === 503) { setStatus('Nicht gespeichert', 'err'); showLogin('Auf Netlify ist noch kein Passwort gesetzt (EDIT_PASSWORD).'); }
+    else if (!r.ok) setStatus('Speichern fehlgeschlagen', 'err');
+    else setStatus('✓ Online gespeichert', 'ok');
+  } catch { setStatus('Keine Verbindung – nicht gespeichert', 'err'); }
+  saving = false;
+  if (savePending) { savePending = false; remoteSave(); }
+}
+async function loadRemote(){
+  try {
+    const r = await fetch(API, { cache: 'no-store' });
+    if (r.ok) { const d = await r.json(); if (d && Array.isArray(d.days)) state = normalize(d); }
+  } catch {}
+  if (SITE_MODE === 'view') state.active = 0;
+  render();
+}
+function showLogin(msg){
+  const dlg = document.getElementById('loginDialog');
+  document.getElementById('loginMsg').textContent = msg || '';
+  if (!dlg.open) dlg.showModal();
+  document.getElementById('pwInput').focus();
+}
+async function checkPw(pw){
+  try { const r = await fetch(API + '?check=1', { headers: { 'x-edit-password': pw }, cache: 'no-store' }); return r.status; }
+  catch { return 0; }
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+/* YouTube- oder Vimeo-Link → Video-Infos */
+function parseYouTube(input){
+  if (!input) return null;
+  const s = input.trim();
+  if (/^[\w-]{11}$/.test(s)) return { type: 'yt', id: s, start: 0 };
+  try {
+    const u = new URL(s.startsWith('http') ? s : 'https://' + s);
+    if (u.hostname.includes('vimeo.com')) {
+      const m = u.pathname.match(/(?:\/video)?\/(\d{5,})(?:\/([\da-f]{6,}))?/);
+      if (!m) return null;
+      return { type: 'vimeo', id: m[1], hash: m[2] || u.searchParams.get('h') || '' };
+    }
+    let id = null;
+    if (u.hostname.includes('youtu.be')) id = u.pathname.slice(1, 12);
+    else if (u.searchParams.get('v')) id = u.searchParams.get('v');
+    else {
+      const m = u.pathname.match(/\/(embed|shorts|live|v)\/([\w-]{11})/);
+      if (m) id = m[2];
+    }
+    if (!id || !/^[\w-]{11}$/.test(id)) return null;
+    const t = u.searchParams.get('t') || u.searchParams.get('start') || '0';
+    let start = 0;
+    const hms = t.match(/(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s?)?/);
+    if (hms) start = (+hms[1] || 0) * 3600 + (+hms[2] || 0) * 60 + (+hms[3] || 0);
+    return { type: 'yt', id, start };
+  } catch { return null; }
+}
+
+function videoHTML(url){
+  const yt = parseYouTube(url);
+  if (!yt) {
+    if (READONLY) return `<div class="empty">Kein Video hinterlegt</div>`;
+    return `<div class="empty">${url ? '⚠ Kein gültiger YouTube- oder Vimeo-Link' : '▶ YouTube- oder Vimeo-Link einfügen,<br>um das Video hier einzubetten'}</div>`;
+  }
+  /* Lokal geöffnete Datei: YouTube blockiert Einbettungen (Fehler 153) → Vorschaubild mit Link */
+  if (yt.type === 'yt' && location.protocol === 'file:') {
+    const href = `https://www.youtube.com/watch?v=${yt.id}${yt.start ? '&t=' + yt.start + 's' : ''}`;
+    return `<a class="yt-thumb" href="${href}" target="_blank" rel="noopener" title="Video auf YouTube öffnen">
+      <img src="https://i.ytimg.com/vi/${yt.id}/hqdefault.jpg" alt="" loading="lazy">
+      <span class="play">▶</span><span class="cap">Video auf YouTube öffnen</span></a>`;
+  }
+  /* Endlosschlaufe: YouTube braucht loop=1 plus playlist=<ID>, Vimeo loop=1 */
+  const src = yt.type === 'vimeo'
+    ? `https://player.vimeo.com/video/${yt.id}?loop=1&dnt=1${yt.hash ? '&h=' + yt.hash : ''}`
+    : `https://www.youtube-nocookie.com/embed/${yt.id}?rel=0&loop=1&playlist=${yt.id}&playsinline=1${yt.start ? '&start=' + yt.start : ''}`;
+  return `<iframe src="${src}" title="Übungsvideo" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+}
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- Render ---------- */
+function renderIntro(){
+  const el = document.getElementById('intro');
+  if (READONLY) { el.innerHTML = state.intro.trim() ? `<div class="intro-box">${esc(state.intro)}</div>` : ''; return; }
+  if (document.activeElement && document.activeElement.id === 'introText') return;
+  el.innerHTML = `<label for="introText">Einführungstext (erscheint oben auf der Seite)</label>
+    <textarea id="introText" placeholder="z. B. Hallo! Hier sind deine zwei Trainingspläne. Mache Plan 1 am Montag und Plan 2 am Donnerstag …">${esc(state.intro)}</textarea>`;
+}
+
+function render(){
+  renderIntro();
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = state.days.map((d, i) =>
+    `<button class="tab ${i === state.active ? 'active' : ''}" data-tab="${i}">${esc(d.name || 'Trainingsplan ' + (i + 1))}</button>`
+  ).join('');
+
+  const day = state.days[state.active];
+  const sec = document.getElementById('day');
+
+  const totalSets = day.exercises.reduce((a, e) => a + (+e.sets || 0), 0);
+  const libOptions = state.library.map((l, i) => `<option value="${i}">${esc(l.name)}</option>`).join('');
+
+  if (READONLY) {
+    sec.innerHTML = `
+      <div class="day-head">
+        <h2 class="plan-title">${esc(day.name)}</h2>
+      </div>
+      <div class="summary">${day.exercises.length} Übung${day.exercises.length === 1 ? '' : 'en'} · ${totalSets} Sätze insgesamt</div>
+      <div class="list">
+        ${day.exercises.length ? day.exercises.map((e, i) => cardRO(e, i)).join('') : `<div class="emptyday">Dieser Plan enthält noch keine Übungen.</div>`}
+      </div>`;
+    return;
+  }
+
+  sec.innerHTML = `
+    <div class="day-head">
+      <input id="dayName" value="${esc(day.name)}" aria-label="Name des Trainingsplans" placeholder="Name des Plans">
+      <button data-resetday title="Abgehakte Sätze zurücksetzen">↺ Häkchen zurücksetzen</button>
+    </div>
+    <div class="summary">${day.exercises.length} Übung${day.exercises.length === 1 ? '' : 'en'} · ${totalSets} Sätze insgesamt</div>
+    <div class="list">
+      ${day.exercises.length ? day.exercises.map((e, i) => cardHTML(e, i, day.exercises.length, libOptions)).join('') :
+        `<div class="emptyday">Noch keine Übungen in diesem Plan.</div>`}
+    </div>
+    <div class="add-row"><button class="primary" data-addex>+ Übung hinzufügen</button></div>`;
+}
+
+function cardHTML(e, i, n, libOptions){
+  const sets = Math.max(0, Math.min(20, +e.sets || 0));
+  const boxes = Array.from({ length: sets }, (_, k) =>
+    `<div class="set ${e.done?.includes(k) ? 'done' : ''}" data-set="${k}" title="Satz ${k + 1} abhaken">${k + 1}</div>`).join('');
+  return `
+  <article class="card" data-ex="${e.id}">
+    <div class="video" data-video>${videoHTML(e.url)}</div>
+    <div class="body">
+      <div class="row">
+        <span class="num">${i + 1}</span>
+        <input class="name" data-f="name" value="${esc(e.name)}" placeholder="Name der Übung">
+      </div>
+      <div>
+        <label>Übung wechseln</label>
+        <select data-swap>
+          <option value="">${state.library.length ? '– aus Bibliothek wählen –' : '– Bibliothek ist noch leer –'}</option>
+          ${libOptions}
+        </select>
+      </div>
+
+      <div>
+        <label>Video-Link (YouTube oder Vimeo)</label>
+        <input data-f="url" value="${esc(e.url)}" placeholder="https://www.youtube.com/watch?v=… oder https://vimeo.com/…">
+      </div>
+      <div class="grid4">
+        <div><label>Sätze</label>
+          <div class="stepper"><button data-step="sets:-1">−</button><input data-f="sets" type="number" min="0" max="20" value="${esc(e.sets)}"><button data-step="sets:1">+</button></div>
+        </div>
+        <div><label>Wiederholungen</label>
+          <div class="stepper"><button data-step="reps:-1">−</button><input data-f="reps" value="${esc(e.reps)}" placeholder="10"><button data-step="reps:1">+</button></div>
+        </div>
+        <div><label>Gewicht</label><input data-f="weight" value="${esc(e.weight)}" placeholder="z. B. 20 kg"></div>
+        <div><label>Pause</label><input data-f="rest" value="${esc(e.rest)}" placeholder="60 s"></div>
+      </div>
+      ${sets ? `<div><label>Sätze abhaken</label><div class="sets">${boxes}</div></div>` : ''}
+      <div>
+        <label>Beschrieb</label>
+        <textarea data-f="desc" placeholder="Ausführung, Tipps, Variationen …">${esc(e.desc)}</textarea>
+      </div>
+      <div class="actions">
+        <button class="icon" data-move="-1" ${i === 0 ? 'disabled' : ''} title="Nach oben">↑</button>
+        <button class="icon" data-move="1" ${i === n - 1 ? 'disabled' : ''} title="Nach unten">↓</button>
+        <button data-tolib title="Übung in Bibliothek speichern">📚 In Bibliothek</button>
+        <button data-moveplan title="In den anderen Plan verschieben">⇄ In ${esc(state.days[1 - state.active].name || 'anderen Plan')}</button>
+        <button data-dup title="Übung duplizieren">⧉</button>
+        <button class="danger" data-del title="Übung löschen">🗑</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function cardRO(e, i){
+  const stat =(l, v) => (v !== '' && v != null) ? `<div class="stat"><span>${l}</span><strong>${esc(v)}</strong></div>` : '';
+  const yt = parseYouTube(e.url);
+  return `
+  <article class="card" data-ex="${e.id}">
+    <div>
+      <div class="video">${videoHTML(e.url)}</div>
+      ${yt ? `<div style="padding:8px 12px"><a class="yt-link" href="${yt.type === 'vimeo' ? `https://vimeo.com/${yt.id}${yt.hash ? '/' + yt.hash : ''}` : `https://www.youtube.com/watch?v=${yt.id}${yt.start ? '&t=' + yt.start + 's' : ''}`}" target="_blank" rel="noopener">▶ Video auf ${yt.type === 'vimeo' ? 'Vimeo' : 'YouTube'} öffnen</a></div>` : ''}
+    </div>
+    <div class="body">
+      <div class="row"><span class="num">${i + 1}</span><span class="name">${esc(e.name || 'Übung')}</span></div>
+      <div class="stats">${stat('Sätze', e.sets)}${stat('Wiederholungen', e.reps)}${stat('Gewicht', e.weight)}${stat('Pause', e.rest)}</div>
+      ${e.desc ? `<div><label>Beschrieb</label><p class="desc">${esc(e.desc)}</p></div>` : ''}
+    </div>
+  </article>`;
+}
+
+function renderLib(){
+  const el = document.getElementById('libList');
+  el.innerHTML = state.library.length ? state.library.map((l, i) => `
+    <div class="lib-item">
+      <div><strong>${esc(l.name || 'Ohne Namen')}</strong><div class="hint">${esc(l.sets)} × ${esc(l.reps)}${parseYouTube(l.url) ? ' · ▶ Video' : ''}</div></div>
+      <div class="row"><button data-libadd="${i}">+ Zum Plan</button><button class="danger icon" data-libdel="${i}">🗑</button></div>
+    </div>`).join('') : '<p class="hint">Noch keine Übungen gespeichert.</p>';
+}
+
+/* ---------- Helpers ---------- */
+const curDay = () => state.days[state.active];
+const findEx = id => curDay().exercises.find(e => e.id === id);
+const libCopy = e => ({ name: e.name, url: e.url, sets: e.sets, reps: e.reps, weight: e.weight, rest: e.rest, desc: e.desc });
+
+/* ---------- Events ---------- */
+
+document.addEventListener('input', ev => {
+  const t = ev.target;
+  if (t.id === 'introText') { state.intro = t.value; save(); return; }
+  if (t.id === 'dayName') {
+    curDay().name = t.value; save();
+    const tab = document.querySelector(`.tab[data-tab="${state.active}"]`);
+    if (tab) tab.textContent = t.value || 'Trainingsplan ' + (state.active + 1);
+    return;
+  }
+  const card = t.closest('[data-ex]'); if (!card || !t.dataset.f) return;
+  const ex = findEx(card.dataset.ex); if (!ex) return;
+  const f = t.dataset.f;
+  ex[f] = f === 'sets' ? Math.max(0, Math.min(20, parseInt(t.value) || 0)) : t.value;
+  save();
+  if (f === 'url') card.querySelector('[data-video]').innerHTML = videoHTML(ex.url);
+});
+
+document.addEventListener('change', ev => {
+  const t = ev.target;
+  if (t.dataset.f === 'sets') { const ex = findEx(t.closest('[data-ex]').dataset.ex); ex.done = (ex.done || []).filter(k => k < ex.sets); save(); render(); }
+  if (t.matches('[data-swap]') && t.value !== '') {
+    const ex = findEx(t.closest('[data-ex]').dataset.ex);
+    Object.assign(ex, libCopy(state.library[+t.value]), { done: [] });
+    save(); render(); toast('Übung gewechselt');
+  }
+});
+
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('button, .set'); if (!b) return;
+  const d = b.dataset;
+  const card = b.closest('[data-ex]');
+  const day = curDay();
+
+  if (d.tab !== undefined) { state.active = +d.tab; save(); render(); return; }
+  if ('resetday' in d) { day.exercises.forEach(e => e.done = []); save(); render(); toast('Häkchen zurückgesetzt'); return; }
+  if ('addex' in d) { day.exercises.push(newExercise()); save(); render(); document.querySelector('.card:last-of-type .name')?.focus(); return; }
+
+  if (d.libadd !== undefined) { day.exercises.push(newExercise(libCopy(state.library[+d.libadd]))); save(); render(); toast('Zum Plan hinzugefügt'); return; }
+  if (d.libdel !== undefined) { state.library.splice(+d.libdel, 1); save(); renderLib(); render(); return; }
+
+  if (!card) return;
+  const idx = day.exercises.findIndex(e => e.id === card.dataset.ex);
+  const ex = day.exercises[idx];
+
+  if (d.set !== undefined) {
+    const k = +d.set; ex.done = ex.done || [];
+    ex.done = ex.done.includes(k) ? ex.done.filter(x => x !== k) : [...ex.done, k];
+    b.classList.toggle('done'); save(); return;
+  }
+  if (d.step) {
+    const [f, delta] = d.step.split(':');
+    const cur = parseInt(ex[f]) || 0;
+    ex[f] = Math.max(0, Math.min(f === 'sets' ? 20 : 999, cur + +delta));
+    if (f === 'sets') { ex.done = (ex.done || []).filter(k => k < ex.sets); save(); render(); }
+    else { card.querySelector(`[data-f="${f}"]`).value = ex[f]; save(); }
+    return;
+  }
+  if (d.move) { const j = idx + +d.move; [day.exercises[idx], day.exercises[j]] = [day.exercises[j], day.exercises[idx]]; save(); render(); return; }
+  if ('moveplan' in d) { day.exercises.splice(idx, 1); state.days[1 - state.active].exercises.push(ex); save(); render(); toast('Übung verschoben'); return; }
+  if ('dup' in d) { day.exercises.splice(idx + 1, 0, { ...JSON.parse(JSON.stringify(ex)), id: uid(), done: [] }); save(); render(); return; }
+  if ('del' in d) { if (confirm(`«${ex.name || 'Übung'}» löschen?`)) { day.exercises.splice(idx, 1); save(); render(); } return; }
+  if ('tolib' in d) {
+    const i = state.library.findIndex(l => l.name.trim().toLowerCase() === (ex.name || '').trim().toLowerCase());
+    if (i >= 0) state.library[i] = libCopy(ex); else state.library.push(libCopy(ex));
+    save(); render(); toast(i >= 0 ? 'Bibliothek aktualisiert' : 'In Bibliothek gespeichert'); return;
+  }
+});
+
+document.getElementById('libBtn').onclick = () => { renderLib(); document.getElementById('libDialog').showModal(); };
+
+/* Schreibgeschützte Kopie mit eingebauten Plänen erzeugen */
+document.getElementById('shareBtn').onclick = async () => {
+  const plan = JSON.parse(JSON.stringify(state));
+  plan.library = [];
+  plan.active = 0;
+  plan.stamp = Date.now();
+  plan.days.forEach(d => d.exercises.forEach(e => e.done = []));
+  const json = JSON.stringify(plan).replace(/</g, '\\u003c');
+  const marker = '/*CW-EMBED*/' + 'null' + '/*CW-EMBED-END*/';
+  /* Nur das eigene Skript behalten – fremde Laufzeit-Skripte der Vorschau entfernen */
+  const clean = new DOMParser().parseFromString(SOURCE, 'text/html');
+  clean.querySelectorAll('script').forEach(s => { if (!s.textContent.includes('CW-EMBED')) s.remove(); });
+  const html = ('<!doctype html>\n' + clean.documentElement.outerHTML).replace(marker, '/*CW-EMBED*/' + json + '/*CW-EMBED-END*/');
+  const filename = 'Trainingsplan_CW_Athletic_Training.html';
+
+  let dl = null;
+  try { dl = window.claude?.use ? await window.claude.use('downloads') : null; } catch {}
+  if (dl) {
+    try { await dl.save({ filename, data: html }); toast('Datei zum Weitergeben gespeichert'); }
+    catch (e) { if (e?.code !== 'declined') toast('Speichern nicht möglich'); }
+    return;
+  }
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+  a.download = filename;
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  toast('Datei zum Weitergeben gespeichert');
+};
+
+
+
+document.getElementById('themeBtn').onclick = () => {
+  const root = document.documentElement;
+  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  root.dataset.theme = dark ? 'light' : 'dark';
+  try { localStorage.setItem(STORE_KEY + '-theme', root.dataset.theme); } catch {}
+};
+try { const th = localStorage.getItem(STORE_KEY + '-theme'); if (th) document.documentElement.dataset.theme = th; } catch {}
+
+render();
+
+if (SITE_MODE) {
+  document.getElementById('shareBtn').style.display = 'none';
+  loadRemote();
+}
+if (SITE_MODE === 'edit') {
+  document.getElementById('viewLink').hidden = false;
+  const dlg = document.getElementById('loginDialog');
+  dlg.addEventListener('cancel', e => e.preventDefault());
+  document.getElementById('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const v = document.getElementById('pwInput').value;
+    const st = await checkPw(v);
+    if (st === 204) {
+      editPw = v;
+      try { localStorage.setItem('cw-edit-pw', v); } catch {}
+      dlg.close(); setStatus('✓ Angemeldet', 'ok');
+    } else if (st === 503) document.getElementById('loginMsg').textContent = 'Auf Netlify ist noch kein Passwort gesetzt (EDIT_PASSWORD).';
+    else if (st === 0) document.getElementById('loginMsg').textContent = 'Keine Verbindung zum Server.';
+    else document.getElementById('loginMsg').textContent = 'Falsches Passwort.';
+  });
+  if (!editPw) showLogin('');
+  else checkPw(editPw).then(st => {
+    if (st === 204) setStatus('✓ Angemeldet', 'ok');
+    else showLogin(st === 503 ? 'Auf Netlify ist noch kein Passwort gesetzt (EDIT_PASSWORD).' : 'Bitte Passwort eingeben.');
+  });
+}
+</script>
+</body>
+</html>

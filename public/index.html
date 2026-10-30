@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="de-CH"><head>
+<html lang="de-CH">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CW Athletic Training</title>
@@ -81,6 +82,15 @@
   .stat strong{font-size:1.15rem}
   .desc{margin:0;white-space:pre-wrap}
   .yt-link{font-size:.82rem;color:var(--accent)}
+  .sync{font-size:.85rem;color:var(--muted);align-self:center;white-space:nowrap}
+  .sync:empty{display:none}
+  .sync[data-state="ok"]{color:var(--accent)}
+  .sync[data-state="err"]{color:var(--danger);font-weight:600}
+  #loginForm{display:grid;gap:10px}
+  a.btn{text-decoration:none;display:inline-flex;align-items:center}
+  #intro{margin-bottom:18px}
+  #intro textarea{min-height:90px}
+  .intro-box{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:14px 18px;white-space:pre-wrap;line-height:1.6;box-shadow:var(--shadow)}
   .yt-thumb{position:absolute;inset:0;display:block;color:#fff;text-decoration:none}
   .yt-thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.7)}
   .yt-thumb .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:68px;height:48px;border-radius:14px;background:#e2552b;display:grid;place-items:center;font-size:1.4rem;box-shadow:0 6px 20px rgba(0,0,0,.4)}
@@ -100,15 +110,15 @@
       <svg class="logo" viewBox="0 0 64 72" aria-hidden="true">
         <defs>
           <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="var(--accent)"></stop>
-            <stop offset="1" stop-color="var(--accent-2)"></stop>
+            <stop offset="0" stop-color="var(--accent)"/>
+            <stop offset="1" stop-color="var(--accent-2)"/>
           </linearGradient>
         </defs>
-        <path d="M32 2 L60 16 V44 C60 58 47 66 32 70 C17 66 4 58 4 44 V16 Z" fill="url(#lg)"></path>
-        <path d="M32 7 L55 19 V44 C55 55 45 61 32 65 C19 61 9 55 9 44 V19 Z" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"></path>
+        <path d="M32 2 L60 16 V44 C60 58 47 66 32 70 C17 66 4 58 4 44 V16 Z" fill="url(#lg)"/>
+        <path d="M32 7 L55 19 V44 C55 55 45 61 32 65 C19 61 9 55 9 44 V19 Z" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5"/>
         <text x="32" y="45" text-anchor="middle" font-family="Impact, 'Arial Black', sans-serif" font-size="25" font-style="italic" fill="#fff" letter-spacing="-1">CW</text>
-        <path d="M14 52 L44 52 L40 56 L10 56 Z" fill="#fff" opacity=".9"></path>
-        <path d="M18 58 L38 58 L35 61 L15 61 Z" fill="#fff" opacity=".55"></path>
+        <path d="M14 52 L44 52 L40 56 L10 56 Z" fill="#fff" opacity=".9"/>
+        <path d="M18 58 L38 58 L35 61 L15 61 Z" fill="#fff" opacity=".55"/>
       </svg>
       <div class="brand-text">
         <span class="brand-name">CYRIL WYSS</span>
@@ -119,10 +129,13 @@
       <button id="shareBtn" class="primary edit-only" title="Schreibgeschützte HTML-Datei für die Weitergabe erstellen">📤 Weitergeben</button>
       <button id="libBtn" class="edit-only" title="Gespeicherte Übungen">📚 Bibliothek</button>
       <button onclick="window.print()">🖨 Drucken</button>
+      <span id="syncStatus" class="sync"></span>
+      <a id="viewLink" class="btn" href="/" target="_blank" rel="noopener" hidden>👁 Ansicht öffnen</a>
       <button id="themeBtn" class="icon" title="Hell/Dunkel">◐</button>
     </div>
   </header>
 
+  <section id="intro"></section>
   <nav class="tabs" id="tabs"></nav>
   <section id="day"></section>
 </div>
@@ -136,13 +149,25 @@
   <div id="libList"></div>
 </dialog>
 
+<dialog id="loginDialog">
+  <form id="loginForm">
+    <strong>Bearbeiten – Anmeldung</strong>
+    <p class="hint">Gib dein Bearbeitungs-Passwort ein. Es wird auf diesem Gerät gemerkt.</p>
+    <input id="pwInput" type="password" autocomplete="current-password" placeholder="Passwort">
+    <p id="loginMsg" class="hint" style="color:var(--danger);min-height:1em"></p>
+    <button class="primary" type="submit">Anmelden</button>
+  </form>
+</dialog>
+
 <div class="toast" id="toast"></div>
 
 <script>
 /* Bei der Weitergabe wird hier der fertige Plan eingesetzt → schreibgeschützte Ansicht */
 const EMBED = /*CW-EMBED*/{"active":0,"days":[{"id":"a4msnl8f","name":"Trainingsplan 1","exercises":[{"id":"cradb2n2","name":"Lunges mit Kurzhanteln","url":"https://www.youtube.com/watch?v=3vCdkrMSe4s&t=9s","sets":4,"reps":10,"weight":"","rest":"60 s","desc":"2 Serien pro Bein. Kontrolliert abbremsen und wieder hochgehen","done":[]},{"id":"fn3bhbwx","name":"Goblet Squat mit Kettlebell","url":"https://vimeo.com/1087109474","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"3 Sekunden runter und 1 Sekunde hoch","done":[]},{"id":"y9m6yo9o","name":"KB Swing alternierend","url":"https://www.youtube.com/watch?v=Rrp_dYbTi5E","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"Rücken immer gerade halten","done":[]},{"id":"v0nhpfh0","name":"Good Morning","url":"https://vimeo.com/1087109525","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"Rücken immer gerade halten","done":[]},{"id":"5lmgthky","name":"Jefferson Curl mit Langhantel","url":"https://www.youtube.com/watch?v=BWU9g05FKfo","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"langsame ausführung mit der Kettlebell","done":[]},{"id":"q49fkakt","name":"Bent Over Row einarmig mit Kurzhantel","url":"https://www.youtube.com/watch?v=djKEHg_NkJg","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"kannst du mit Kettlebell oder Kurzhantel machen. Rücken bleibt gerade","done":[]},{"id":"2jls3zl8","name":"Unilateral Chest Press liegend mit Kettlebell","url":"https://www.youtube.com/watch?v=t5mcWYtE7eU&t=10s","sets":3,"reps":10,"weight":"","rest":"60 s","desc":"Bankdrücken, kannst du auch mit beiden Armen gleichzeitig machen","done":[]}]},{"id":"orz78uwo","name":"Trainingsplan 2","exercises":[]}],"library":[],"stamp":1793359766223}/*CW-EMBED-END*/;
+/* Auf Netlify: 'view' (Ansicht für die Person) oder 'edit' (Bearbeiten mit Passwort, speichert live) */
+const SITE_MODE = /*CW-SITE*/'view'/*CW-SITE-END*/;
 const SOURCE = '<!doctype html>\n' + document.documentElement.outerHTML;
-const READONLY = !!EMBED;
+const READONLY = SITE_MODE ? SITE_MODE === 'view' : !!EMBED;
 if (READONLY) document.documentElement.classList.add('readonly');
 const STORE_KEY = READONLY ? 'cw-athlet-ansicht-v1' : 'cw-trainingsplaene-v2';
 
@@ -173,12 +198,16 @@ function normalize(s){
   s.days = Array.isArray(s.days) ? s.days.slice(0, 2) : [];
   while (s.days.length < 2) s.days.push({ id: uid(), name: 'Trainingsplan ' + (s.days.length + 1), exercises: [] });
   s.library = s.library || [];
+  s.intro = typeof s.intro === 'string' ? s.intro : '';
   s.active = s.active === 1 ? 1 : 0;
   return s;
 }
 
 let state;
-if (READONLY) {
+if (SITE_MODE) {
+  /* Startwert bis die Live-Daten geladen sind */
+  state = EMBED ? JSON.parse(JSON.stringify(EMBED)) : defaultState();
+} else if (READONLY) {
   state = EMBED;
   /* abgehakte Sätze der Person wiederherstellen, solange es derselbe Plan ist */
   try { const s = JSON.parse(localStorage.getItem(STORE_KEY)); if (s && s.stamp === EMBED.stamp) state = s; } catch {}
@@ -189,7 +218,56 @@ if (READONLY) {
 normalize(state);
 
 function save(){
+  if (SITE_MODE === 'edit') { queueRemoteSave(); return; }
+  if (SITE_MODE) return;
   try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch {}
+}
+
+/* ---------- Live-Speicherung (nur auf Netlify) ---------- */
+const API = '/api/plan';
+let editPw = '';
+try { editPw = localStorage.getItem('cw-edit-pw') || ''; } catch {}
+let saveTimer = null, saving = false, savePending = false;
+
+function setStatus(txt, st){
+  const el = document.getElementById('syncStatus');
+  if (el) { el.textContent = txt; el.dataset.state = st || ''; }
+}
+function queueRemoteSave(){
+  setStatus('Speichert …', 'busy');
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(remoteSave, 700);
+}
+async function remoteSave(){
+  if (saving) { savePending = true; return; }
+  saving = true;
+  try {
+    const r = await fetch(API, { method: 'PUT', headers: { 'content-type': 'application/json', 'x-edit-password': editPw }, body: JSON.stringify(state) });
+    if (r.status === 401) { setStatus('Nicht gespeichert', 'err'); showLogin('Passwort falsch – bitte nochmals eingeben.'); }
+    else if (r.status === 503) { setStatus('Nicht gespeichert', 'err'); showLogin('Auf Netlify ist noch kein Passwort gesetzt (EDIT_PASSWORD).'); }
+    else if (!r.ok) setStatus('Speichern fehlgeschlagen', 'err');
+    else setStatus('✓ Online gespeichert', 'ok');
+  } catch { setStatus('Keine Verbindung – nicht gespeichert', 'err'); }
+  saving = false;
+  if (savePending) { savePending = false; remoteSave(); }
+}
+async function loadRemote(){
+  try {
+    const r = await fetch(API, { cache: 'no-store' });
+    if (r.ok) { const d = await r.json(); if (d && Array.isArray(d.days)) state = normalize(d); }
+  } catch {}
+  if (SITE_MODE === 'view') state.active = 0;
+  render();
+}
+function showLogin(msg){
+  const dlg = document.getElementById('loginDialog');
+  document.getElementById('loginMsg').textContent = msg || '';
+  if (!dlg.open) dlg.showModal();
+  document.getElementById('pwInput').focus();
+}
+async function checkPw(pw){
+  try { const r = await fetch(API + '?check=1', { headers: { 'x-edit-password': pw }, cache: 'no-store' }); return r.status; }
+  catch { return 0; }
 }
 
 function toast(msg){
@@ -250,7 +328,16 @@ function videoHTML(url){
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 /* ---------- Render ---------- */
+function renderIntro(){
+  const el = document.getElementById('intro');
+  if (READONLY) { el.innerHTML = state.intro.trim() ? `<div class="intro-box">${esc(state.intro)}</div>` : ''; return; }
+  if (document.activeElement && document.activeElement.id === 'introText') return;
+  el.innerHTML = `<label for="introText">Einführungstext (erscheint oben auf der Seite)</label>
+    <textarea id="introText" placeholder="z. B. Hallo! Hier sind deine zwei Trainingspläne. Mache Plan 1 am Montag und Plan 2 am Donnerstag …">${esc(state.intro)}</textarea>`;
+}
+
 function render(){
+  renderIntro();
   const tabs = document.getElementById('tabs');
   tabs.innerHTML = state.days.map((d, i) =>
     `<button class="tab ${i === state.active ? 'active' : ''}" data-tab="${i}">${esc(d.name || 'Trainingsplan ' + (i + 1))}</button>`
@@ -373,6 +460,7 @@ const libCopy = e => ({ name: e.name, url: e.url, sets: e.sets, reps: e.reps, we
 
 document.addEventListener('input', ev => {
   const t = ev.target;
+  if (t.id === 'introText') { state.intro = t.value; save(); return; }
   if (t.id === 'dayName') {
     curDay().name = t.value; save();
     const tab = document.querySelector(`.tab[data-tab="${state.active}"]`);
@@ -480,4 +568,33 @@ document.getElementById('themeBtn').onclick = () => {
 try { const th = localStorage.getItem(STORE_KEY + '-theme'); if (th) document.documentElement.dataset.theme = th; } catch {}
 
 render();
-</script></body></html>
+
+if (SITE_MODE) {
+  document.getElementById('shareBtn').style.display = 'none';
+  loadRemote();
+}
+if (SITE_MODE === 'edit') {
+  document.getElementById('viewLink').hidden = false;
+  const dlg = document.getElementById('loginDialog');
+  dlg.addEventListener('cancel', e => e.preventDefault());
+  document.getElementById('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const v = document.getElementById('pwInput').value;
+    const st = await checkPw(v);
+    if (st === 204) {
+      editPw = v;
+      try { localStorage.setItem('cw-edit-pw', v); } catch {}
+      dlg.close(); setStatus('✓ Angemeldet', 'ok');
+    } else if (st === 503) document.getElementById('loginMsg').textContent = 'Auf Netlify ist noch kein Passwort gesetzt (EDIT_PASSWORD).';
+    else if (st === 0) document.getElementById('loginMsg').textContent = 'Keine Verbindung zum Server.';
+    else document.getElementById('loginMsg').textContent = 'Falsches Passwort.';
+  });
+  if (!editPw) showLogin('');
+  else checkPw(editPw).then(st => {
+    if (st === 204) setStatus('✓ Angemeldet', 'ok');
+    else showLogin(st === 503 ? 'Auf Netlify ist noch kein Passwort gesetzt (EDIT_PASSWORD).' : 'Bitte Passwort eingeben.');
+  });
+}
+</script>
+</body>
+</html>
